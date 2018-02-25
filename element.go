@@ -36,8 +36,8 @@ func (t *Element) Set(k, v string) *Element {
 }
 
 // Add something renderable to the element's children
-func (t *Element) Add(r Renderable) *Element {
-	t.Children = append(t.Children, r)
+func (t *Element) Add(r ...Renderable) *Element {
+	t.Children = append(t.Children, r...)
 	return t
 }
 
