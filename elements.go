@@ -4,64 +4,64 @@ import "io/ioutil"
 
 // HTML Elements are a curtailed set of HTML5 elements
 
-type BASE struct{ Element }
+type BASE struct{ HTMLElement }
 
 func Base() *BASE {
-	return &BASE{Element{Key: "base", Empty: true}}
+	return &BASE{HTMLElement{Key: "base", Empty: true}}
 }
 
-type BODY struct{ Element }
+type BODY struct{ HTMLElement }
 
 func Body() *BODY {
-	return &BODY{Element{Key: "body", Empty: false}}
+	return &BODY{HTMLElement{Key: "body", Empty: false}}
 }
 
-type DIV struct{ Element }
+type DIV struct{ HTMLElement }
 
 func Div() *DIV {
-	return &DIV{Element{Key: "div", Empty: false}}
+	return &DIV{HTMLElement{Key: "div", Empty: false}}
 }
 
-type HEAD struct{ Element }
+type HEAD struct{ HTMLElement }
 
 func Head() *HEAD {
-	return &HEAD{Element{Key: "head", Empty: false}}
+	return &HEAD{HTMLElement{Key: "head", Empty: false}}
 }
 
-type HTML struct{ Element }
+type HTML struct{ HTMLElement }
 
 func Html() *HTML {
-	return &HTML{Element{Key: "html", Empty: false}}
+	return &HTML{HTMLElement{Key: "html", Empty: false}}
 }
 
-type IMG struct{ Element }
+type IMG struct{ HTMLElement }
 
 func Img() *IMG {
-	return &IMG{Element{Key: "img", Empty: true}}
+	return &IMG{HTMLElement{Key: "img", Empty: true}}
 }
 
-type LINK struct{ Element }
+type LINK struct{ HTMLElement }
 
 func Link() *LINK {
-	return &LINK{Element{Key: "link", Empty: true}}
+	return &LINK{HTMLElement{Key: "link", Empty: true}}
 }
 
-type META struct{ Element }
+type META struct{ HTMLElement }
 
 func Meta() *META {
-	return &META{Element{Key: "meta", Empty: true}}
+	return &META{HTMLElement{Key: "meta", Empty: true}}
 }
 
-type SCRIPT struct{ Element }
+type SCRIPT struct{ HTMLElement }
 
 func Script() *SCRIPT {
-	return &SCRIPT{Element{Key: "script", Empty: false}}
+	return &SCRIPT{HTMLElement{Key: "script", Empty: false}}
 }
 
-type TITLE struct{ Element }
+type TITLE struct{ HTMLElement }
 
 func Title() *TITLE {
-	return &TITLE{Element{Key: "title", Empty: false}}
+	return &TITLE{HTMLElement{Key: "title", Empty: false}}
 }
 
 // ROOT is a special case denoting the ephemeral single
@@ -69,10 +69,10 @@ func Title() *TITLE {
 // It is created as the ROOT of a page, and the DOCTYPE and HTML
 // elements added.  The empty Key results in no tags or attributes
 // being written; only the children elements.
-type ROOT struct{ Element }
+type ROOT struct{ HTMLElement }
 
 func Root() *ROOT {
-	return &ROOT{Element{}}
+	return &ROOT{HTMLElement{}}
 }
 
 // Special elements that are not of type Element because they do not follow the

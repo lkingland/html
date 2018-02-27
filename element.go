@@ -6,6 +6,16 @@ package html
 
 import "fmt"
 
+type Element interface {
+	Renderable
+	SetID(string) Element
+	SetClass(string) Element
+	SetStyle(string) Element
+	Set(string, string) Element
+	Add(...Renderable) Element
+	AddText(string) Element
+}
+
 // Element is a representation of an HTML element.
 // An element consists of either an empty tag <img />
 // or standard tag <div></div>, with attributes <div key="value">
@@ -13,7 +23,7 @@ import "fmt"
 // When rendered, a tag will be indented based on its level of nesting,
 // and will have linebreaks in the appropriate place depending on
 // it's being either an inline or non-inline element.
-type Element struct {
+type HTMLElement struct {
 	Key        string
 	Empty      bool
 	Inline     bool
@@ -21,9 +31,24 @@ type Element struct {
 	Children   []Renderable
 }
 
+func (t *HTMLElement) SetID(id string) Element {
+	t.Set("id", id)
+	return t
+}
+
+func (t *HTMLElement) SetClass(class string) Element {
+	t.Set("class", class)
+	return t
+}
+
+func (t *HTMLElement) SetStyle(style string) Element {
+	t.Set("style", style)
+	return t
+}
+
 // Set the value of an attribute on the start tag of the element.
 // <tagname key="value"></tagname>
-func (t *Element) Set(k, v string) *Element {
+func (t *HTMLElement) Set(k, v string) Element {
 	for i, a := range t.Attributes {
 		if a.Key == k {
 			t.Attributes[i].Value = v
@@ -36,9 +61,14 @@ func (t *Element) Set(k, v string) *Element {
 }
 
 // Add something renderable to the element's children
-func (t *Element) Add(r ...Renderable) *Element {
+func (t *HTMLElement) Add(r ...Renderable) Element {
 	t.Children = append(t.Children, r...)
 	return t
+}
+
+// AddText is a convenience method for Add(C(text))
+func (t *HTMLElement) AddText(text string) Element {
+	return t.Add(C(text))
 }
 
 // return a padding string for a given indent level
@@ -48,7 +78,7 @@ func padding(indent int) string {
 }
 
 // Render the element including recursively rendering its children.
-func (t *Element) Render(i int) string {
+func (t *HTMLElement) Render(i int) string {
 	// pseudoelements like root are denoted by a blank tagname (key)
 	// They are rendered by immediately delegating to their children
 	// without any change to indentation, but with a trailing space
@@ -68,7 +98,7 @@ func (t *Element) Render(i int) string {
 	s = s + "<" + t.Key + a + ">"
 	blockChildren := 0
 	for _, c := range t.Children {
-		t, ok := c.(*Element)
+		t, ok := c.(*HTMLElement)
 		if ok && !t.Inline {
 			blockChildren++
 		}
@@ -83,7 +113,7 @@ func (t *Element) Render(i int) string {
 	return s
 }
 
-func (t *Element) renderChildren(i int) string {
+func (t *HTMLElement) renderChildren(i int) string {
 	s := ""
 	for _, c := range t.Children {
 		s = s + c.Render(i)
@@ -91,7 +121,7 @@ func (t *Element) renderChildren(i int) string {
 	return s
 }
 
-func (t *Element) renderAttributes() string {
+func (t *HTMLElement) renderAttributes() string {
 	a := ""
 	for _, v := range t.Attributes {
 		a = a + " " + v.Render()
