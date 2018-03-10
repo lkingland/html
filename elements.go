@@ -1,8 +1,16 @@
 package html
 
-import "io/ioutil"
+import (
+	"io/ioutil"
+)
 
 // HTML Elements are a curtailed set of HTML5 elements
+
+type Anchor struct{ HTMLElement }
+
+func A() *BASE {
+	return &BASE{HTMLElement{Key: "a", Empty: false}}
+}
 
 type BASE struct{ HTMLElement }
 
@@ -62,6 +70,60 @@ type TITLE struct{ HTMLElement }
 
 func Title() *TITLE {
 	return &TITLE{HTMLElement{Key: "title", Empty: false}}
+}
+
+type Unordered struct{ HTMLElement }
+
+func UL() *Unordered {
+	return &Unordered{HTMLElement{Key: "ul", Empty: false}}
+}
+
+type Ordered struct{ HTMLElement }
+
+func OL() *Ordered {
+	return &Ordered{HTMLElement{Key: "ol", Empty: false}}
+}
+
+type Item struct{ HTMLElement }
+
+func LI() *Item {
+	return &Item{HTMLElement{Key: "li", Empty: false}}
+}
+
+type Header1 struct{ HTMLElement }
+
+func H1() *Header1 {
+	return &Header1{HTMLElement{Key: "h1", Empty: false}}
+}
+
+type Header2 struct{ HTMLElement }
+
+func H2() *Header2 {
+	return &Header2{HTMLElement{Key: "h2", Empty: false}}
+}
+
+type Header3 struct{ HTMLElement }
+
+func H3() *Header3 {
+	return &Header3{HTMLElement{Key: "h3", Empty: false}}
+}
+
+type Header4 struct{ HTMLElement }
+
+func H4() *Header4 {
+	return &Header4{HTMLElement{Key: "h4", Empty: false}}
+}
+
+type Header5 struct{ HTMLElement }
+
+func H5() *Header5 {
+	return &Header5{HTMLElement{Key: "h5", Empty: false}}
+}
+
+type Header6 struct{ HTMLElement }
+
+func H6() *Header6 {
+	return &Header6{HTMLElement{Key: "h6", Empty: false}}
 }
 
 // ROOT is a special case denoting the ephemeral single
