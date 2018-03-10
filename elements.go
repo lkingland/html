@@ -30,6 +30,12 @@ func Div() *DIV {
 	return &DIV{HTMLElement{Key: "div", Empty: false}}
 }
 
+type FORM struct{ HTMLElement }
+
+func Form() *FORM {
+	return &FORM{HTMLElement{Key: "form", Empty: false}}
+}
+
 type HEAD struct{ HTMLElement }
 
 func Head() *HEAD {
@@ -46,6 +52,12 @@ type IMG struct{ HTMLElement }
 
 func Img() *IMG {
 	return &IMG{HTMLElement{Key: "img", Empty: true}}
+}
+
+type INPUT struct{ HTMLElement }
+
+func Input() *INPUT {
+	return &INPUT{HTMLElement{Key: "input", Empty: false}}
 }
 
 type LINK struct{ HTMLElement }
