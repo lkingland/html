@@ -6,14 +6,26 @@ package html
 
 import "fmt"
 
+// Component is a metastructure that, when rendered, returns
+// the root of an arbitrarily large element tree.
+type Component interface {
+	Render() Element
+}
+
+func Render(c Component) string {
+	return c.Render().Render(0)
+}
+
+// Element is a renderable with other
 type Element interface {
 	Renderable
-	SetID(string) Element
-	SetClass(string) Element
-	SetStyle(string) Element
+	Key() string
+	Empty() bool
+	Inline() bool
 	Set(string, string) Element
+	Attributes() []Attribute
 	Add(...Renderable) Element
-	AddText(string) Element
+	Children() []Renderable
 }
 
 // Element is a representation of an HTML element.
@@ -24,45 +36,50 @@ type Element interface {
 // and will have linebreaks in the appropriate place depending on
 // it's being either an inline or non-inline element.
 type HTMLElement struct {
-	Key        string
-	Empty      bool
-	Inline     bool
-	Attributes []Attribute
-	Children   []Renderable
+	key        string
+	empty      bool
+	inline     bool
+	attributes []Attribute
+	children   []Renderable
 }
 
-func (t *HTMLElement) SetID(id string) Element {
-	t.Set("id", id)
-	return t
+func (t *HTMLElement) Key() string {
+	return t.key
 }
 
-func (t *HTMLElement) SetClass(class string) Element {
-	t.Set("class", class)
-	return t
+func (t *HTMLElement) Empty() bool {
+	return t.empty
 }
 
-func (t *HTMLElement) SetStyle(style string) Element {
-	t.Set("style", style)
-	return t
+func (t *HTMLElement) Inline() bool {
+	return t.inline
+}
+
+func (t *HTMLElement) Attributes() []Attribute {
+	return t.attributes
+}
+
+func (t *HTMLElement) Children() []Renderable {
+	return t.children
 }
 
 // Set the value of an attribute on the start tag of the element.
 // <tagname key="value"></tagname>
 func (t *HTMLElement) Set(k, v string) Element {
-	for i, a := range t.Attributes {
+	for i, a := range t.attributes {
 		if a.Key == k {
-			t.Attributes[i].Value = v
+			t.attributes[i].Value = v
 			break
 		}
 	}
 	a := Attribute{Key: k, Value: v}
-	t.Attributes = append(t.Attributes, a)
+	t.attributes = append(t.attributes, a)
 	return t
 }
 
 // Add something renderable to the element's children
 func (t *HTMLElement) Add(r ...Renderable) Element {
-	t.Children = append(t.Children, r...)
+	t.children = append(t.children, r...)
 	return t
 }
 
@@ -79,43 +96,65 @@ func padding(indent int) string {
 
 // Render the element including recursively rendering its children.
 func (t *HTMLElement) Render(i int) string {
-	// pseudoelements like root are denoted by a blank tagname (key)
-	// They are rendered by immediately delegating to their children
+
+	// pseudoelement root is denoted by a blank tagname (key)
+	// and is rendered by immediately delegating to children
 	// without any change to indentation, but with a trailing space
-	// for after the closing html tag.
-	if t.Key == "" {
+	// for after the closing html tag.  This allows for the entire
+	// document to be treated as  a single DAG despite there being
+	// multiple root level elements allowd by the spec, eg: doctype
+	// and HTML.
+	if t.key == "" {
 		return t.renderChildren(i) + "\n"
 	}
 
-	s := "\n" + padding(i)
+	// Tag is prefixed by a srcbreak and padded to the current level.
+	src := "\n" + padding(i)
 
-	a := t.renderAttributes()
+	// Attributes will be embedded in the open tag
+	attributes := t.renderAttributes()
 
-	if t.Empty {
-		return s + "<" + t.Key + a + " />"
+	// Empty tags have a special syntax and are handled and then we immediately return
+	if t.empty {
+		return src + "<" + t.key + attributes + " />"
 	}
 
-	s = s + "<" + t.Key + a + ">"
+	// Regular (nonempty) tags are rendered by first creating the (indented) open tag
+	// which includes attribute key value pairs.
+	src = src + "<" + t.key + attributes + ">"
+
+	// For each of the child renderables, cast them into their specific type to
+	// determine how to indent, and then recursively render their children.
 	blockChildren := 0
-	for _, c := range t.Children {
-		t, ok := c.(*HTMLElement)
-		if ok && !t.Inline {
-			blockChildren++
+	for _, child := range t.children {
+
+		// If the child is a Component metaobject, get its root
+		// element, and that is the thing
+		if component, ok := child.(Component); ok {
+			element := component.Render()
+			if !element.Inline() {
+				blockChildren++
+			}
+		} else if element, ok := child.(Element); ok {
+			if !element.Inline() {
+				blockChildren++
+			}
 		}
-		i2 := i + 1
-		s = s + c.Render(i2)
+
+		childIndentLevel := i + 1
+		src = src + child.Render(childIndentLevel)
 	}
 
 	if blockChildren > 0 {
-		s = s + "\n" + padding(i)
+		src = src + "\n" + padding(i)
 	}
-	s = s + "</" + t.Key + ">"
-	return s
+	src = src + "</" + t.key + ">"
+	return src
 }
 
 func (t *HTMLElement) renderChildren(i int) string {
 	s := ""
-	for _, c := range t.Children {
+	for _, c := range t.children {
 		s = s + c.Render(i)
 	}
 	return s
@@ -123,7 +162,7 @@ func (t *HTMLElement) renderChildren(i int) string {
 
 func (t *HTMLElement) renderAttributes() string {
 	a := ""
-	for _, v := range t.Attributes {
+	for _, v := range t.attributes {
 		a = a + " " + v.Render()
 	}
 	return a

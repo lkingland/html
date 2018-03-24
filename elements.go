@@ -9,139 +9,163 @@ import (
 type Anchor struct{ HTMLElement }
 
 func A() *BASE {
-	return &BASE{HTMLElement{Key: "a", Empty: false}}
+	return &BASE{HTMLElement{key: "a", empty: false}}
 }
 
 type BASE struct{ HTMLElement }
 
 func Base() *BASE {
-	return &BASE{HTMLElement{Key: "base", Empty: true}}
+	return &BASE{HTMLElement{key: "base", empty: true}}
+}
+
+type BUTTON struct{ HTMLElement }
+
+func Button() *BUTTON {
+	return &BUTTON{HTMLElement{key: "button", empty: false}}
 }
 
 type BODY struct{ HTMLElement }
 
 func Body() *BODY {
-	return &BODY{HTMLElement{Key: "body", Empty: false}}
+	return &BODY{HTMLElement{key: "body", empty: false}}
 }
 
 type DIV struct{ HTMLElement }
 
 func Div() *DIV {
-	return &DIV{HTMLElement{Key: "div", Empty: false}}
+	return &DIV{HTMLElement{key: "div", empty: false}}
+}
+
+type EM struct{ HTMLElement }
+
+func Em() *EM {
+	return &EM{HTMLElement{key: "em", empty: false, inline: true}}
 }
 
 type FORM struct{ HTMLElement }
 
 func Form() *FORM {
-	return &FORM{HTMLElement{Key: "form", Empty: false}}
+	return &FORM{HTMLElement{key: "form", empty: false}}
 }
 
 type HEAD struct{ HTMLElement }
 
 func Head() *HEAD {
-	return &HEAD{HTMLElement{Key: "head", Empty: false}}
+	return &HEAD{HTMLElement{key: "head", empty: false}}
 }
 
 type HTML struct{ HTMLElement }
 
 func Html() *HTML {
-	return &HTML{HTMLElement{Key: "html", Empty: false}}
+	return &HTML{HTMLElement{key: "html", empty: false}}
+}
+
+type I struct{ HTMLElement }
+
+func Italic() *I {
+	return &I{HTMLElement{key: "i", empty: false, inline: true}}
 }
 
 type IMG struct{ HTMLElement }
 
 func Img() *IMG {
-	return &IMG{HTMLElement{Key: "img", Empty: true}}
+	return &IMG{HTMLElement{key: "img", empty: true, inline: true}}
 }
 
 type INPUT struct{ HTMLElement }
 
 func Input() *INPUT {
-	return &INPUT{HTMLElement{Key: "input", Empty: false}}
+	return &INPUT{HTMLElement{key: "input", empty: false, inline: true}}
+}
+
+type LABEL struct{ HTMLElement }
+
+func Label() *LABEL {
+	return &LABEL{HTMLElement{key: "label", empty: false, inline: true}}
 }
 
 type LINK struct{ HTMLElement }
 
 func Link() *LINK {
-	return &LINK{HTMLElement{Key: "link", Empty: true}}
+	return &LINK{HTMLElement{key: "link", empty: true}}
 }
 
 type META struct{ HTMLElement }
 
 func Meta() *META {
-	return &META{HTMLElement{Key: "meta", Empty: true}}
+	return &META{HTMLElement{key: "meta", empty: true}}
 }
 
 type SCRIPT struct{ HTMLElement }
 
 func Script() *SCRIPT {
-	return &SCRIPT{HTMLElement{Key: "script", Empty: false}}
+	return &SCRIPT{HTMLElement{key: "script", empty: false}}
 }
 
 type TITLE struct{ HTMLElement }
 
 func Title() *TITLE {
-	return &TITLE{HTMLElement{Key: "title", Empty: false}}
+	return &TITLE{HTMLElement{key: "title", empty: false}}
 }
 
 type Unordered struct{ HTMLElement }
 
 func UL() *Unordered {
-	return &Unordered{HTMLElement{Key: "ul", Empty: false}}
+	return &Unordered{HTMLElement{key: "ul", empty: false}}
 }
 
 type Ordered struct{ HTMLElement }
 
 func OL() *Ordered {
-	return &Ordered{HTMLElement{Key: "ol", Empty: false}}
+	return &Ordered{HTMLElement{key: "ol", empty: false}}
 }
 
 type Item struct{ HTMLElement }
 
 func LI() *Item {
-	return &Item{HTMLElement{Key: "li", Empty: false}}
+	return &Item{HTMLElement{key: "li", empty: false}}
 }
 
 type Header1 struct{ HTMLElement }
 
 func H1() *Header1 {
-	return &Header1{HTMLElement{Key: "h1", Empty: false}}
+	return &Header1{HTMLElement{key: "h1", empty: false}}
 }
 
 type Header2 struct{ HTMLElement }
 
 func H2() *Header2 {
-	return &Header2{HTMLElement{Key: "h2", Empty: false}}
+	return &Header2{HTMLElement{key: "h2", empty: false}}
 }
 
 type Header3 struct{ HTMLElement }
 
 func H3() *Header3 {
-	return &Header3{HTMLElement{Key: "h3", Empty: false}}
+	return &Header3{HTMLElement{key: "h3", empty: false}}
 }
 
 type Header4 struct{ HTMLElement }
 
 func H4() *Header4 {
-	return &Header4{HTMLElement{Key: "h4", Empty: false}}
+	return &Header4{HTMLElement{key: "h4", empty: false}}
 }
 
 type Header5 struct{ HTMLElement }
 
 func H5() *Header5 {
-	return &Header5{HTMLElement{Key: "h5", Empty: false}}
+	return &Header5{HTMLElement{key: "h5", empty: false}}
 }
 
 type Header6 struct{ HTMLElement }
 
 func H6() *Header6 {
-	return &Header6{HTMLElement{Key: "h6", Empty: false}}
+	return &Header6{HTMLElement{key: "h6", empty: false}}
 }
 
 // ROOT is a special case denoting the ephemeral single
 // parent of the two root elements DOCTYPE and HTML.
 // It is created as the ROOT of a page, and the DOCTYPE and HTML
-// elements added.  The empty Key results in no tags or attributes
+// elements added.  The empty key results in no tags or attributes
 // being written; only the children elements.
 type ROOT struct{ HTMLElement }
 
@@ -186,4 +210,10 @@ func (f FILE) Render(i int) string {
 		panic(err)
 	}
 	return string(content)
+}
+
+type SPAN struct{ HTMLElement }
+
+func Span() *SPAN {
+	return &SPAN{HTMLElement{key: "span", empty: false, inline: true}}
 }
